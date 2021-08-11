@@ -1,5 +1,13 @@
 float* arr;
 
+void reflector(int i1, int i2) {
+	int o1 = arr[i1] + arr[i2];
+	int o2 = arr[i1] - arr[i2];
+	
+	arr[i1] = o1;
+	arr[i2] = o2;
+}
+
 void loeffler() {
 	//stage 1
 	reflector(0,7);
