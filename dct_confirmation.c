@@ -1,10 +1,10 @@
 #include <math.h>
 //=================PROTOTYPES==============================
-void dct(float);
+void dct(float[8][8]);
 float X(int,int);
 float C(int);
 
-float input[][];
+float input**;
 
 float C(int u){
   return (u == 0)? 1.0/sqrt(2):1;
@@ -20,14 +20,14 @@ float X(int u, int v){
   return sum * (C(u)/2) * (C(v)/2);
 }
 
-void dct(float a[][]){
+void dct(float a[8][8]){
   input = a;
-  float result[][];
+  float result[8][8];
     
   for(int i = 0; i < 7; i++){
     for(int j = 0; j < 7; j++){
        result[i][j] = X(i,j);
     }
   }
-a = result;
+
 }
