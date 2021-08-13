@@ -2,8 +2,8 @@
 #include <stdio.h>
 
 #define reflector(a, b) tmp0=a; a=tmp0+b; b=tmp0-b;
-#define rotator(a, b, c0, c1, c2) tmp0 = c1*b + c0*(a+b); b = c2*b + c0*(a+b); a=tmp0; a = a & 0xf ? (a>>4) | 1 : a>>4; b = b & 0xf ? (b>>4) | 1 : b>>4;
-#define scale(a)a = a & 0xf ? (a>>4) | 1 : a>>4;
+#define rotator(a, b, c0, c1, c2) tmp0 = c1*b + c0*(a+b); b = c2*b + c0*(a+b); a=tmp0; a = tmp0 & 0xf ? (tmp0>>4) | 1 : tmp0>>4; b = b & 0xf ? (b>>4) | 1 : b>>4;
+#define scale(a) a*=23; a = a & 0xf ? (a>>4) | 1 : a>>4; //do macro
 
 void loeffler(int16_t x[8]) {
 	int32_t x0 = x[0];
@@ -16,22 +16,22 @@ void loeffler(int16_t x[8]) {
 	int32_t x7 = x[7];
 
 	int32_t tmp0;
-	
+	//stage 1
 	reflector(x0,x7);
 	reflector(x1,x6);
 	reflector(x2,x5);
 	reflector(x3,x4);
-	
+	//stage 2
 	reflector(x0,x3);
 	reflector(x1,x2);
 	rotator(x4,x7,13,-4,-22);
 	rotator(x5,x6,16,-13,-19);
-	
+	//stage 3
 	reflector(x0,x1);
 	rotator(x2,x3,9,12,-30); //sqrt2_c6
 	reflector(x4,x6);
 	reflector(x7,x5);
-	
+	//stage 4
 	reflector(x7,x4);
 	scale(x5);
 	scale(x6);
