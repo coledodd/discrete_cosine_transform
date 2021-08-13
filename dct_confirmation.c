@@ -154,12 +154,12 @@ int main(){
     printf("\n");
   }  
 
-  Q(image_2, 1);
+  Q(image, 1);
   
   printf("\n\nafter quantization int:\n");
   for(int i = 0; i < 8; i++){
     for(int j = 0; j < 8; j++){
-      printf("%i ",image_2[i][j]);
+      printf("%i ",image[i][j]);
     }
     printf("\n");
   }  
