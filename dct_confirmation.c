@@ -38,14 +38,14 @@ void dct(int a[8][8]){
   input = a;
   int result[8][8];
     
-  for(int i = 0; i < 7; i++){
-    for(int j = 0; j < 7; j++){
+  for(int i = 0; i < 8; i++){
+    for(int j = 0; j < 8; j++){
        result[i][j] = X(i,j);
     }
   }
   
-  for(int i = 0; i < 7; i++){
-    for(int j = 0; j < 7; j++){
+  for(int i = 0; i < 8; i++){
+    for(int j = 0; j < 8; j++){
       a[i][j] = result[i][j];
     }
   }
@@ -55,14 +55,14 @@ void dct_f(float a[8][8]){
   input_f = a;
   float result[8][8];
 
-  for(int i = 0; i < 7; i++){
-    for(int j = 0; j < 7; j++){
+  for(int i = 0; i < 8; i++){
+    for(int j = 0; j < 8; j++){
        result[i][j] = X_f(i,j);
     }
   }
 
-  for(int i = 0; i < 7; i++){
-    for(int j = 0; j < 7; j++){
+  for(int i = 0; i < 8; i++){
+    for(int j = 0; j < 8; j++){
       a[i][j] = result[i][j];
     }
   }
@@ -91,8 +91,8 @@ int main(){
         {1,2,3,4,5,6,7,8}
   };
   printf("original input int:\n"); 
-  for(int i = 0; i < 7; i++){
-    for(int j = 0; j < 7; j++){
+  for(int i = 0; i < 8; i++){
+    for(int j = 0; j < 8; j++){
       printf("%i ",image[i][j]);
     }
     printf("\n");
@@ -101,16 +101,16 @@ int main(){
   dct(image);
   
   printf("\n\nafter DCT int:\n");
-  for(int i = 0; i < 7; i++){
-    for(int j = 0; j < 7; j++){
+  for(int i = 0; i < 8; i++){
+    for(int j = 0; j < 8; j++){
       printf("%i ",image[i][j]);
     }
     printf("\n");
   }  
 
-  printf("original input float:\n");
-  for(int i = 0; i < 7; i++){
-    for(int j = 0; j < 7; j++){
+  printf("\n\noriginal input float:\n");
+  for(int i = 0; i < 8; i++){
+    for(int j = 0; j < 8; j++){
       printf("%f ",image_f[i][j]);
     }
     printf("\n");
@@ -119,8 +119,8 @@ int main(){
   dct_f(image_f);
 
   printf("\n\nafter DCT float:\n");
-  for(int i = 0; i < 7; i++){
-    for(int j = 0; j < 7; j++){
+  for(int i = 0; i < 8; i++){
+    for(int j = 0; j < 8; j++){
       printf("%f ",image_f[i][j]);
     }
     printf("\n");
