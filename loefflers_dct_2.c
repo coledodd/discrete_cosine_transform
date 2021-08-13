@@ -4,9 +4,9 @@
 #define rotator (a, b, c0, c1, c2) a<<=4; b<<=4; tmp0 = c1*b + c0*(a+b); b = c1*b + c0*(a+b); a=tmp0; a>>=4; b>>=4;
 #define scale (a) a<<=4; a*6; a>>=4;
 
-void loeffler(uint8_t input[8], int8_t output[8]) {
-	uint32_t load3210 = ((uint32_t*) input)[0];
-	uint32_t load7654 = ((uint32_t*) input)[1];
+void loeffler(int8_t arr[8]) {
+	int32_t load3210 = ((int32_t*) arr)[0];
+	int32_t load7654 = ((int32_t*) arr)[1];
 	
 	int32_t store3210 = 0;
 	int32_t store7654 = 0;
@@ -62,7 +62,43 @@ void loeffler(uint8_t input[8], int8_t output[8]) {
 	store7654 |= x2<<8;
 	store3210 |= x3<<8;
 	
-	((int32_t*) output)[0] = store3210;
-	((uint32_t*) output)[1] = store7654;
-	
+	((int32_t*) arr)[0] = store3210;
+	((uint32_t*) arr)[1] = store7654;
+}
+
+int main() {
+	int8_t input[8][8] = {
+		{1,2,3,4,5,6,7,8},
+		{1,2,3,4,5,6,7,8},
+		{1,2,3,4,5,6,7,8},
+		{1,2,3,4,5,6,7,8},
+		{1,2,3,4,5,6,7,8},
+		{1,2,3,4,5,6,7,8},
+		{1,2,3,4,5,6,7,8},
+		{1,2,3,4,5,6,7,8}
+	};
+
+	for (int i = 0; i < 8; i++)
+		loeffler(input[i]);
+
+	int8_t input_2[8][8];
+
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			input_2[i][j] = input[j][i];
+
+	printf("\n transposed \n");
+	for (int i = 0; i < 8; i++)
+		loeffler(input_2[i]);
+
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			input[i][j] = input_2[j][i];
+
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++)
+			printf("%f, ", input[i][j]/8);
+		puts("\n");
+	}
+	return 0;
 }
