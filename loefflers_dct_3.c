@@ -2,8 +2,8 @@
 #include <stdio.h>
 
 #define reflector(a, b) tmp0=a; a=tmp0+b; b=tmp0-b;
-#define rotator(a, b, c0, c1, c2) tmp0 = c1*b + c0*(a+b); b = c2*b + c0*(a+b); a=tmp0; a = a & 0xf ? (a>>4) + 1 : a>>4; b = b & 0xf ? (b>>4) + 1 : b>>4;
-#define scale(a)a = a & 0xf ? (a>>4) + 1 : a>>4;
+#define rotator(a, b, c0, c1, c2) tmp0 = c1*b + c0*(a+b); b = c2*b + c0*(a+b); a=tmp0; a = a & 0xf ? (a>>4) | 1 : a>>4; b = b & 0xf ? (b>>4) | 1 : b>>4;
+#define scale(a)a = a & 0xf ? (a>>4) | 1 : a>>4;
 
 void loeffler(int16_t x) {
 	int32_t x0 = x[0];
@@ -74,7 +74,7 @@ int main() {
 
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++)
-			printf("%d, ", input[i][j] & 0b111 ? (input[i][j] >> 4) + 1) : (input[i][j] >> 4));
+			printf("%d, ", input[i][j] & 0b111 ? (input[i][j] >> 3) | 1) : (input[i][j] >> 3));
 		puts("\n");
 	}
 	return 0;
