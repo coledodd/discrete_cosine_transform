@@ -2,7 +2,7 @@
 #include <stdio.h>
 //=================PROTOTYPES=============================
 void dct(int[8][8]);
-void Q(int[8][8]);
+void Q(int[8][8], int);
 void dct_f(float[8][8]);
 int X(int,int);
 float X_f(int,int);
@@ -50,9 +50,8 @@ void dct(int a[8][8]){
   }
 }
 
-void Q(int a[8][8]){
+void Q(int a[8][8], int q_scale){
   int result[8][8];
-  int q_scale = 8;
   //quatization table
   int q[8][8] = {
 	{16,  11,  10,  16,  24,  40,  51,  61},
@@ -117,7 +116,16 @@ int main(){
 	{1,2,3,4,5,6,7,8},
 	{1,2,3,4,5,6,7,8}
   };
-  
+  int image_2[8][8] = {
+ {21, 21, 21, 22, 22, 22, 22, 22},
+ {21, 21, 21, 21, 21, 21, 21, 21},
+ {21, 21, 21, 21, 21, 21, 21, 21},
+ {21, 21, 21, 21, 21, 20, 20, 20},
+ {22, 22, 22, 22, 21, 21, 21, 21},
+ {24, 24, 24, 23, 23, 22, 22, 22},
+ {26, 26, 25, 25, 24, 24, 24, 23},
+ {27, 27, 27, 26, 25, 25, 25, 24}
+}; 
   float image_f[8][8] = {
         {1,2,3,4,5,6,7,8},
         {1,2,3,4,5,6,7,8},
@@ -131,27 +139,27 @@ int main(){
   printf("original input int:\n"); 
   for(int i = 0; i < 8; i++){
     for(int j = 0; j < 8; j++){
-      printf("%i ",image[i][j]);
+      printf("%i ",image_2[i][j]);
     }
     printf("\n");
   }
 
-  dct(image);
+  dct(image_2);
   
   printf("\n\nafter DCT int:\n");
   for(int i = 0; i < 8; i++){
     for(int j = 0; j < 8; j++){
-      printf("%i ",image[i][j]);
+      printf("%i ",image_2[i][j]);
     }
     printf("\n");
   }  
 
-  Q(image);
+  Q(image_2, 1);
   
   printf("\n\nafter quantization int:\n");
   for(int i = 0; i < 8; i++){
     for(int j = 0; j < 8; j++){
-      printf("%i ",image[i][j]);
+      printf("%i ",image_2[i][j]);
     }
     printf("\n");
   }  
