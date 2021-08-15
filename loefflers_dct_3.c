@@ -2,82 +2,94 @@
 #include <stdio.h>
 
 #define reflector(a, b) tmp0=a; a=tmp0+b; b=tmp0-b;
-#define rotator(a, b, c0, c1, c2) tmp0 = c1*b + c0*(a+b); b = c2*a + c0*(a+b); a=tmp0; a = ((a & 0xf) ? ((a>>4) | 1) : a>>4); b = ((b & 0xf) ? ((b>>4) | 1) : b>>4);
-#define scale(a) a*=23; a = ((a & 0xf) ? ((a>>4) | 1) : a>>4); //do macro
+#define rotator(a, b, c0, c1, c2) tmp0 = c1*b + c0*(a+b); b = c2*a + c0*(a+b); a=tmp0; a=round_4(a); b=round_4(b);
+#define scale(a) a*=23; a = round_4(a);
+#define round_4(a) ((a & 0b1000) ? ((a>>4) + 1) : (a>>4))
+#define round_3(a) ((a & 0b100) ? ((a >> 3) + 1) : (a >> 3))
 
-void loeffler(int16_t x[8]) {
-	int32_t x0 = x[0];
-	int32_t x1 = x[1];
-	int32_t x2 = x[2];
-	int32_t x3 = x[3];
-	int32_t x4 = x[4];
-	int32_t x5 = x[5];
-	int32_t x6 = x[6];
-	int32_t x7 = x[7];
+void loeffler(int16_t x[240][320]) {
+	for (int i = 0; i < 240; i++) {
+		for (int j = 0; j < 320; j+=8) {
+			int32_t x0 = x[i][0+j];
+			int32_t x1 = x[i][1+j];
+			int32_t x2 = x[i][2+j];
+			int32_t x3 = x[i][3+j];
+			int32_t x4 = x[i][4+j];
+			int32_t x5 = x[i][5+j];
+			int32_t x6 = x[i][6+j];
+			int32_t x7 = x[i][7+j];
 
-	int32_t tmp0;
-	//stage 1
-	reflector(x0,x7);
-	reflector(x1,x6);
-	reflector(x2,x5);
-	reflector(x3,x4);
-	//stage 2
-	reflector(x0,x3);
-	reflector(x1,x2);
-	rotator(x4,x7,13,-4,-22);  //c3
-	rotator(x5,x6,16,-13,-19); //c1
-	//stage 3
-	reflector(x0,x1);
-	rotator(x2,x3,9,12,-30);   //sqrt2_c6
-	reflector(x4,x6);
-	reflector(x7,x5);
-	//stage 4
-	reflector(x7,x4);
-	scale(x5);
-	scale(x6);
-	
-	x[0] = x0;
-	x[4] = x1;
-	x[2] = x2;
-	x[6] = x3;
-	x[7] = x4;
-	x[3] = x5;
-	x[5] = x6;
-	x[1] = x7;
-}
-int main() {
-	int16_t input[8][8] = {
-		{1,2,3,4,5,6,7,8},
-		{1,2,3,4,5,6,7,8},
-		{1,2,3,4,5,6,7,8},
-		{1,2,3,4,5,6,7,8},
-		{1,2,3,4,5,6,7,8},
-		{1,2,3,4,5,6,7,8},
-		{1,2,3,4,5,6,7,8},
-		{1,2,3,4,5,6,7,8}
-	};
-
-	for (int i = 0; i < 8; i++)
-		loeffler(input[i]);
-
-	int16_t input_2[8][8];
-
-	for (int i = 0; i < 8; i++)
-		for (int j = 0; j < 8; j++)
-			input_2[i][j] = input[j][i];
-
-	printf("\n transposed \n");
-	for (int i = 0; i < 8; i++)
-		loeffler(input_2[i]);
-
-	for (int i = 0; i < 8; i++)
-		for (int j = 0; j < 8; j++)
-			input[i][j] = input_2[j][i];
-
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++)
-			printf("%d, ", ((input[i][j] & 0b111) ? ((input[i][j] >> 3) | 1) : (input[i][j] >> 3)));
-		puts("\n");
+			int32_t tmp0;
+			//stage 1
+			reflector(x0,x7);
+			reflector(x1,x6);
+			reflector(x2,x5);
+			reflector(x3,x4);
+			//stage 2
+			reflector(x0,x3);
+			reflector(x1,x2);
+			rotator(x4,x7,13,-4,-22);  //c3
+			rotator(x5,x6,16,-13,-19); //c1
+			//stage 3
+			reflector(x0,x1);
+			rotator(x2,x3,9,12,-30);   //sqrt2_c6
+			reflector(x4,x6);
+			reflector(x7,x5);
+			//stage 4
+			reflector(x7,x4);
+			scale(x5);
+			scale(x6);
+			
+			x[i][0+j] = x0;
+			x[i][4+j] = x1;
+			x[i][2+j] = x2;
+			x[i][6+j] = x3;
+			x[i][7+j] = x4;
+			x[i][3+j] = x5;
+			x[i][5+j] = x6;
+			x[i][1+j] = x7;
+		}
 	}
-	return 0;
+	for (int i = 0; i < 240; i+=8) {
+		for (int j = 0; j < 320; j++) {
+			int32_t x0 = x[i+0][j];
+			int32_t x1 = x[i+1][j];
+			int32_t x2 = x[i+2][j];
+			int32_t x3 = x[i+3][j];
+			int32_t x4 = x[i+4][j];
+			int32_t x5 = x[i+5][j];
+			int32_t x6 = x[i+6][j];
+			int32_t x7 = x[i+7][j];
+
+			int32_t tmp0;
+			//stage 1
+			reflector(x0,x7);
+			reflector(x1,x6);
+			reflector(x2,x5);
+			reflector(x3,x4);
+			//stage 2
+			reflector(x0,x3);
+			reflector(x1,x2);
+			rotator(x4,x7,13,-4,-22);  //c3
+			rotator(x5,x6,16,-13,-19); //c1
+			//stage 3
+			reflector(x0,x1);
+			rotator(x2,x3,9,12,-30);   //sqrt2_c6
+			reflector(x4,x6);
+			reflector(x7,x5);
+			//stage 4
+			reflector(x7,x4);
+			scale(x5);
+			scale(x6);
+			
+			x[i+0][j] = round_3(x0);
+			x[i+4][j] = round_3(x1);
+			x[i+2][j] = round_3(x2);
+			x[i+6][j] = round_3(x3);
+			x[i+7][j] = round_3(x4);
+			x[i+3][j] = round_3(x5);
+			x[i+5][j] = round_3(x6);
+			x[i+1][j] = round_3(x7);
+		}
+	}
 }
