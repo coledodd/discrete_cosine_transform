@@ -10,14 +10,19 @@
 void dct_round1(int8_t x[240][320], int16_t X[240][320]) {
 	for (int i = 0; i < 240; i++) {
 		for (int j = 0; j < 320; j+=8) {
-			int32_t x0 = x[i][0+j];
-			int32_t x1 = x[i][1+j];
-			int32_t x2 = x[i][2+j];
-			int32_t x3 = x[i][3+j];
-			int32_t x4 = x[i][4+j];
-			int32_t x5 = x[i][5+j];
-			int32_t x6 = x[i][6+j];
-			int32_t x7 = x[i][7+j];
+			int32_t x3210 = (int32_t*)(x[i]+j); //load 0 to 3
+			int32_t x7654 = (int32_t*)(x[i]+j+7); //load 4 to 7
+			
+			int32_t x0 = ((x3210>>0)&0xf)+((x7654>>24)&0xf);
+			int32_t x7 = ((x3210>>0)&0xf)-((x7654>>24)&0xf);
+			int32_t x1 = ((x3210>>8)&0xf)+((x7654>>16)&0xf);
+			int32_t x6 = ((x3210>>8)&0xf)-((x7654>>16)&0xf);
+			int32_t x2 = ((x3210>>16)&0xf)+((x7654>>8)&0xf);
+			int32_t x5 = ((x3210>>16)&0xf)-((x7654>>8)&0xf);
+			int32_t x3 = ((x3210>>24)&0xf)+((x7654>>0)&0xf);
+			int32_t x4 = ((x3210>>24)&0xf)-((x7654>>0)&0xf);
+			
+			
 
 			int32_t tmp0;
 			//stage 1
