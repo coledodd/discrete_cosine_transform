@@ -1,9 +1,11 @@
-#include <loefflers_dct.h>
-#include <dct_confirmation.c>
+#include "loefflers_dct.h"
+#include "dct_confirmation.c"
+#include "test_images.c"
+
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>
-#include <test_images.c>
+
 
 int image_1[8][8] = {
   {1,2,3,4,5,6,7,8},
