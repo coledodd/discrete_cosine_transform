@@ -26,8 +26,10 @@ float C(int u){
 
 int X(int u, int v){
   float sum = 0;
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  int i = 0;
+  int j = 0;
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
       sum += input[i][j] * cos((2*i+1)*M_PI*u/16) * cos((2*j+1)*M_PI*v/16);
     }
   }  
@@ -37,15 +39,17 @@ int X(int u, int v){
 void dct(int a[8][8]){
   input = a;
   int result[8][8];
-    
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  int i = 0;
+  int j = 0;
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
        result[i][j] = X(i,j);
     }
   }
-  
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  i = 0;
+  j = 0;
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
       a[i][j] = result[i][j];
     }
   }
@@ -64,15 +68,19 @@ void Q(int a[8][8], int q_scale){
 	{49,  64,  78,  87, 103, 121, 120, 101},
 	{72,  92,  95,  98, 112, 100, 103,  99}
   };
+  int i = 0;
+  int j = 0;
   //quantization
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
        result[i][j] = ((16*a[i][j]) + sign(a[i][j])*q_scale*q[i][j]) / (2*q_scale*q[i][j]);
     }
   }
+  i = 0;
+  j = 0;
   //changing input array to output
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
       a[i][j] = result[i][j];
     }
   }
@@ -81,8 +89,10 @@ void Q(int a[8][8], int q_scale){
 //=================DCT CODE FOR FLOATS==============================
 float X_f(int u, int v){
   float sum = 0;
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  int i = 0;
+  int j = 0;
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
       sum += input_f[i][j] * cos((2*i+1)*M_PI*u/16) * cos((2*j+1)*M_PI*v/16);
     }
   }
@@ -92,15 +102,17 @@ float X_f(int u, int v){
 void dct_f(float a[8][8]){
   input_f = a;
   float result[8][8];
-
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  int i = 0;
+  int j = 0;
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
        result[i][j] = X_f(i,j);
     }
   }
-
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  i = 0;
+  j = 0;
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
       a[i][j] = result[i][j];
     }
   }
