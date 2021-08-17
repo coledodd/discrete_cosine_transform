@@ -7,7 +7,7 @@
 #define round_16(a) ((a & 0x8000) ? ((a>>16) + 1) : (a>>16))
 #define round_3(a) ((a & 0b100) ? ((a >> 3) + 1) : (a >> 3))
 
-void loeffler(int8_t x[240][320], int16_t X[240][320]) {
+void dct_round1(int8_t x[240][320], int16_t X[240][320]) {
 	for (int i = 0; i < 240; i++) {
 		for (int j = 0; j < 320; j+=8) {
 			int32_t x0 = x[i][0+j];
@@ -50,6 +50,8 @@ void loeffler(int8_t x[240][320], int16_t X[240][320]) {
 			X[i][1+j] = x7;
 		}
 	}
+}
+void dct_round2(int16_t X[240][320]) {
 	for (int i = 0; i < 240; i+=8) {
 		for (int j = 0; j < 320; j++) {
 			int32_t x0 = X[i+0][j];
@@ -92,4 +94,9 @@ void loeffler(int8_t x[240][320], int16_t X[240][320]) {
 			X[i+1][j] = round_3(x7);
 		}
 	}
+}
+
+void loeffler(int8_t x[240][320], int16_t X[240][320]) {
+	dct_round1(int8_t x[240][320], int16_t X[240][320]);
+	dct_round2(int16_t X[240][320]);
 }
