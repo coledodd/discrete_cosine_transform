@@ -4,70 +4,33 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <time.h>
+#include <sys/time.h>
 
 
-int image_1[8][8] = {
-  {1,2,3,4,5,6,7,8},
-	{1,2,3,4,5,6,7,8},
-	{1,2,3,4,5,6,7,8},
-	{1,2,3,4,5,6,7,8},
-	{1,2,3,4,5,6,7,8},
-	{1,2,3,4,5,6,7,8},
-	{1,2,3,4,5,6,7,8},
-	{1,2,3,4,5,6,7,8}
-};
-
-int image_2[8][8] = {
-	{21, 21, 21, 22, 22, 22, 22, 22},
-	{21, 21, 21, 21, 21, 21, 21, 21},
-	{21, 21, 21, 21, 21, 21, 21, 21},
-	{21, 21, 21, 21, 21, 20, 20, 20},
- 	{22, 22, 22, 22, 21, 21, 21, 21},
- 	{24, 24, 24, 23, 23, 22, 22, 22},
- 	{26, 26, 25, 25, 24, 24, 24, 23},
- 	{27, 27, 27, 26, 25, 25, 25, 24}
-}; 
-
-int16_t input_3[8][8] = {{0, 0, 0, 0, 0, 0, 0, 0}, 
-  {255, 255, 255, 255, 255, 255, 255, 255}, 
-	{0, 0, 0, 0, 0, 0, 0, 0}, 
-	{255, 255, 255, 255, 255, 255, 255, 255}, 
-	{0, 0, 0, 0, 0, 0, 0, 0}, 
-	{255, 255, 255, 255, 255, 255, 255, 255}, 
-	{0, 0, 0, 0, 0, 0, 0, 0}, 
-	{255, 255, 255, 255, 255, 255, 255, 255}
-};
-
-float image_f[8][8] = {
-  {1,2,3,4,5,6,7,8},
-  {1,2,3,4,5,6,7,8},
-  {1,2,3,4,5,6,7,8},
-  {1,2,3,4,5,6,7,8},
-  {1,2,3,4,5,6,7,8},
-  {1,2,3,4,5,6,7,8},
-  {1,2,3,4,5,6,7,8},
-  {1,2,3,4,5,6,7,8}
-};
 int main(void){
   
-  int16_t output[240][320]
+  int16_t output[240][320];
   
-  printf("original input int:\n"); 
+  printf("original input:\n"); 
   for(int i = 0; i < 8; i++){
     for(int j = 0; j < 8; j++){
-      printf("%i ",input_1[i][j]);
+      printf("%i ",test_image_1[i][j]);
     }
     printf("\n");
   }
+  struct timeval t0, t1;
   //start timer
-	clock_t start_clk = clock();
-  
-  loeffler(test_image_1,output)
-  
+  gettimeofday(&t0, NULL);
+
+  int i;
+  for(i = 0; i < 100; i++){
+    loeffler(test_image_1, output);
+  }
   //stop timer
-  printf("Processor time used by testbench: %lg sec.\n", \
-    (clock() - start_clk) / (long double) CLOCKS_PER_SEC);
+  gettimeofday(&t1, NULL);
+  printf("\nDid %u calls in %.2g seconds\n", \
+    i, t1.tv_sec - t0.tv_sec + 1E-6 * (t1.tv_usec - t0.tv_usec));
+
 
   printf("\nLoeffler output:\n");
   for(int i = 0; i < 8; i++){
@@ -76,15 +39,14 @@ int main(void){
     }
     printf("\n");
   }
-  
-  dct(input_3);
+  //testbench dct
+  dct(test_image_2);
+
   printf("\nTestbench output:\n");
   for(int i = 0; i < 8; i++){
     for(int j = 0; j < 8; j++){
-      printf("%i ",input_3[i][j]);
+      printf("%i ",test_image_2[i][j]);
     }
     printf("\n");
   }  
-
-
 }
