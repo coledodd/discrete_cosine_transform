@@ -3,7 +3,7 @@
 
 #define reflector(a, b) tmp0=a; a=tmp0+b; b=tmp0-b;
 #define rotator(a, b, c0, c1, c2) tmp0 = c1*b + c0*(a+b); b = c2*a + c0*(a+b); a=tmp0; a=round_16(a); b=round_16(b);
-#define scale(a) a*=23; a = round_4(a);
+#define scale(a) a*=92682; a = round_16(a);
 #define round_16(a) ((a & 0x8000) ? ((a>>16) + 1) : (a>>16))
 #define round_3(a) ((a & 0b100) ? ((a >> 3) + 1) : (a >> 3))
 
