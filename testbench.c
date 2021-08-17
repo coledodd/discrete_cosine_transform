@@ -24,7 +24,6 @@ int main(void){
   //start timer
   gettimeofday(&t0, NULL);
 
-  int i;
   for(i = 0; i < 100; i++){
     loeffler(test_image_1, output);
   }
