@@ -11,9 +11,11 @@ int main(void){
   
   int16_t output[240][320];
   
-  printf("original input:\n"); 
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  printf("original input:\n");
+  int i;
+  int j;
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
       printf("%i ",test_image_1[i][j]);
     }
     printf("\n");
@@ -33,8 +35,8 @@ int main(void){
 
 
   printf("\nLoeffler output:\n");
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
       printf("%i ",output[i][j]);
     }
     printf("\n");
@@ -43,8 +45,8 @@ int main(void){
   dct(test_image_2);
 
   printf("\nTestbench output:\n");
-  for(int i = 0; i < 8; i++){
-    for(int j = 0; j < 8; j++){
+  for(i = 0; i < 8; i++){
+    for(j = 0; j < 8; j++){
       printf("%i ",test_image_2[i][j]);
     }
     printf("\n");
