@@ -8,8 +8,9 @@
 #define round_3(a) ((a & 0b10000) ? ((a >> 5) + 1) : (a >> 5))
 
 void dct_round1(uint8_t x[240][320], int16_t X[240][320]) {
-	for (int i = 0; i < 240; i++) {
-		for (int j = 0; j < 320; j+=8) {
+	int i, j;
+	for (i = 0; i < 240; i++) {
+		for (j = 0; j < 320; j+=8) {
 			// int32_t x3210 = ((int32_t*)(x[i]))[j+0]; //load 0 to 3
 			// int32_t x7654 = ((int32_t*)(x[i]))[j+4]; //load 4 to 7
 			
@@ -66,8 +67,9 @@ void dct_round1(uint8_t x[240][320], int16_t X[240][320]) {
 	}
 }
 void dct_round2(int16_t X[240][320]) {
-	for (int i = 0; i < 240; i+=8) {
-		for (int j = 0; j < 320; j++) {
+	int i, j;
+	for (i = 0; i < 240; i+=8) {
+		for (j = 0; j < 320; j++) {
 			int32_t x0 = X[i+0][j];
 			int32_t x1 = X[i+1][j];
 			int32_t x2 = X[i+2][j];
