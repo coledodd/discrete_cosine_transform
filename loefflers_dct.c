@@ -72,11 +72,11 @@ void dct_round2(int16_t X[240][320]) {
 			//stage 2
 			reflector(x0,x3);
 			reflector(x1,x2);
-			rotator(x4,x7,13,-4,-22);  //c3
-			rotator(x5,x6,16,-13,-19); //c1
+			rotator(x4,x7,54491,-18081, -90901);  //c3
+			rotator(x5,x6,64277,-51491,-77062); //c1
 			//stage 3
 			reflector(x0,x1);
-			rotator(x2,x3,9,12,-30);   //sqrt2_c6
+			rotator(x2,x3,35468,50159,-121095);   //sqrt2_c6
 			reflector(x4,x6);
 			reflector(x7,x5);
 			//stage 4
