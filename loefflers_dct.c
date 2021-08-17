@@ -5,22 +5,31 @@
 #define rotator(a, b, c0, c1, c2) tmp0 = c1*b + c0*(a+b); b = c2*a + c0*(a+b); a=tmp0; a=round_16(a); b=round_16(b);
 #define scale(a) a*=92682; a = round_16(a);
 #define round_16(a) ((a & 0x8000) ? ((a>>16) + 1) : (a>>16))
-#define round_3(a) ((a & 0b100) ? ((a >> 3) + 1) : (a >> 3))
+#define round_3(a) ((a & 0b10000) ? ((a >> 5) + 1) : (a >> 5))
 
-void dct_round1(int8_t x[240][320], int16_t X[240][320]) {
+void dct_round1(uint8_t x[240][320], int16_t X[240][320]) {
 	for (int i = 0; i < 240; i++) {
 		for (int j = 0; j < 320; j+=8) {
-			int32_t x3210 = (int32_t*)(x[i]+j); //load 0 to 3
-			int32_t x7654 = (int32_t*)(x[i]+j+7); //load 4 to 7
+			// int32_t x3210 = ((int32_t*)(x[i]))[j+0]; //load 0 to 3
+			// int32_t x7654 = ((int32_t*)(x[i]))[j+4]; //load 4 to 7
 			
-			int32_t x0 = ((x3210>>0)&0xf)+((x7654>>24)&0xf);
-			int32_t x7 = ((x3210>>0)&0xf)-((x7654>>24)&0xf);
-			int32_t x1 = ((x3210>>8)&0xf)+((x7654>>16)&0xf);
-			int32_t x6 = ((x3210>>8)&0xf)-((x7654>>16)&0xf);
-			int32_t x2 = ((x3210>>16)&0xf)+((x7654>>8)&0xf);
-			int32_t x5 = ((x3210>>16)&0xf)-((x7654>>8)&0xf);
-			int32_t x3 = ((x3210>>24)&0xf)+((x7654>>0)&0xf);
-			int32_t x4 = ((x3210>>24)&0xf)-((x7654>>0)&0xf);
+			// int32_t x0 = ((x3210>>0)&0xf)+((x7654>>24)&0xf);
+			// int32_t x7 = ((x3210>>0)&0xf)-((x7654>>24)&0xf);
+			// int32_t x1 = ((x3210>>8)&0xf)+((x7654>>16)&0xf);
+			// int32_t x6 = ((x3210>>8)&0xf)-((x7654>>16)&0xf);
+			// int32_t x2 = ((x3210>>16)&0xf)+((x7654>>8)&0xf);
+			// int32_t x5 = ((x3210>>16)&0xf)-((x7654>>8)&0xf);
+			// int32_t x3 = ((x3210>>24)&0xf)+((x7654>>0)&0xf);
+			// int32_t x4 = ((x3210>>24)&0xf)-((x7654>>0)&0xf);
+
+			int32_t x0 = x[i][j+0] << 2;
+			int32_t x1 = x[i][j+1] << 2;
+			int32_t x2 = x[i][j+2] << 2;
+			int32_t x3 = x[i][j+3] << 2;
+			int32_t x4 = x[i][j+4] << 2;
+			int32_t x5 = x[i][j+5] << 2;
+			int32_t x6 = x[i][j+6] << 2;
+			int32_t x7 = x[i][j+7] << 2;
 			
 			
 
@@ -101,7 +110,7 @@ void dct_round2(int16_t X[240][320]) {
 	}
 }
 
-void loeffler(int8_t x[240][320], int16_t X[240][320]) {
-	dct_round1(int8_t x[240][320], int16_t X[240][320]);
-	dct_round2(int16_t X[240][320]);
+void loeffler(uint8_t x[240][320], int16_t X[240][320]) {
+	dct_round1(x, X);
+	dct_round2(X);
 }
