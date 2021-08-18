@@ -6,6 +6,8 @@
 #define scale(a) a*=92682; a = round_16(a);
 #define round_16(a) ((a & 0x8000) ? ((a>>16) + 1) : (a>>16))
 #define round_3(a) ((a & 0b10000) ? ((a >> 5) + 1) : (a >> 5))
+// #define reflector_1(a,b) { uint32_t tmp = a; a = tmp&0xffff0000 | (tmp&0x0000ffff + b>>16); b = (tmp&0x0000ffff | (tmp&0x0000ffff - b>>16) << 16; }
+// #define reflector_2(a,b) { uint32_t tmp = a; a = tmp&0x0000ffff | (tmp>>16 + b&0x0000ffff);  a = tmp&0x0000ffff | (tmp>>16 - b&0x0000ffff) << 16; }
 
 void dct_round1(register uint8_t x[240][320], register int16_t X[240][320]) {
 	register int i;
@@ -23,6 +25,9 @@ void dct_round1(register uint8_t x[240][320], register int16_t X[240][320]) {
 			// int32_t x5 = ((x3210>>16)&0xf)-((x7654>>8)&0xf);
 			// int32_t x3 = ((x3210>>24)&0xf)+((x7654>>0)&0xf);
 			// int32_t x4 = ((x3210>>24)&0xf)-((x7654>>0)&0xf);
+
+			
+			/*********************/
 
 			register int32_t x0 = x[i][j+0] << 2;
 			register int32_t x1 = x[i][j+1] << 2;
