@@ -3,6 +3,10 @@
 
 #define reflector(a, b) { register int32_t tmp=a; a=tmp+b; b=tmp-b; }
 
+#define sqrt2_c6(i1, i2) rotator(i1,i2,35468,50159,-121095);
+#define c3(i1, i2) rotator(i1,i2,54491,-18081, -90901);
+#define c1(i1, i2) rotator(r4,r3,64277,-51491,-77062);
+
 #define rotator(a, b, c0, c1, c2) { \
 			uint32_t tmp0, tmp1; \
 			tmp0 = a+b; \
@@ -63,7 +67,7 @@ void dct_round1(uint8_t x_[240][320], int16_t X_[240][320]) {
 		reflector(r4,r1);
 		//stage 3
 		reflector(r0,r4);
-		rotator(r1,r5,35468,50159,-121095);   //sqrt2_c6
+		sqrt2_c6(r1,r5);   //sqrt2_c6
 
 		r0 &= 0xffff;
 		r1 &= 0xffff;
@@ -75,10 +79,10 @@ void dct_round1(uint8_t x_[240][320], int16_t X_[240][320]) {
 		r5 = ((int16_t)(r3 >> 16)); //x7
 		r3 = ((int16_t)(r3& 0xffff)); //x6
 
-
 		//stage 2
-		rotator(r2,r5,54491,-18081, -90901);  //c3
-		rotator(r4,r3,64277,-51491,-77062); //c1
+		c3(r2,r5);  //c3
+		c1(r4,r3); //c1
+
 		//stage 3
 		reflector(r2,r3);
 		reflector(r5,r4);
@@ -125,7 +129,7 @@ void dct_round2(int16_t X_[240][320]) {
 
 		//stage 3
 		reflector(r0,r4);
-		rotator(r1,r5,35468,50159,-121095);   //sqrt2_c6
+		sqrt2_c6(r1,r5);   //sqrt2_c6
 
 		r0 &= 0xffff;
 		r1 &= 0xffff;
@@ -138,8 +142,8 @@ void dct_round2(int16_t X_[240][320]) {
 		r3 = ((int16_t)(r3& 0xffff)); //x6
 
 		//stage 2
-		rotator(r2,r5,54491,-18081, -90901);  //c3
-		rotator(r4,r3,64277,-51491,-77062); //c1
+		c3(r2,r5);  //c3
+		c1(r4,r3); //c1
 
 		//stage 3
 		reflector(r2,r3);
