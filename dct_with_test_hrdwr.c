@@ -60,17 +60,6 @@
 						a = (tmp&0x0000ffff) | ((((int16_t)(tmp>>16)) + ((int16_t)(b&0x0000ffff))) << 16); \
 						b = (b&0xffff0000) | ((((int16_t)(tmp>>16)) - ((int16_t)(b&0x0000ffff)))&0xffff); }
 
-// int32_t btrfly(int32_t i, int n) {
-// 	int32_t tmp0 = (int16_t)((i & 0xffff0000)>>16);
-// 	int32_t tmp1 = (int16_t)((i & 0x0000ffff)>>0);
-// 	switch(n) {
-// 						case 1: c1(tmp0, tmp1); break;
-// 						case 2: c3(tmp0, tmp1); break;
-// 						case 3: sqrt2_c6(tmp0, tmp1); break;
-// 					}
-// 	return ((tmp0 & 0xffff)<<16)|(tmp1 & 0xffff);
-// }
-
 
 void dct_round1(uint8_t x_[240][320], int16_t X_[240][320]) {
 	register int32_t* x = (int32_t*)(x_[0]);
