@@ -15,24 +15,6 @@
 						i2 = (int16_t) i2; \
 					}
 
-
-#define sqrt2_c6(i1, i2) rotator(i1,i2,35468,50159,-121095);
-#define c3(i1, i2) rotator(i1,i2,54491,-18081, -90901);
-#define c1(i1, i2) rotator(i1,i2,64277,-51491,-77062);
-
-#define rotator(a, b, c0, c1, c2) { \
-			int32_t tmp0, tmp1; \
-			tmp0 = a+b; \
-			tmp0 *= c0; \
-			tmp1 = c1*b; \
-			tmp1 += tmp0; \
-			b = c2*a; \
-			b += tmp0; \
-			a=tmp1; \
-			} \
-			a=round_16(a); \
-			b=round_16(b);
-
 #define scale(a) a*=92682; a = round_16(a);
 #define round_16(a) ((a & 0x8000) ? ((a>>16) + 1) : (a>>16))
 #define round_3(a) ((a & 0b100) ? ((a >> 3) + 1) : (a >> 3))
