@@ -1,25 +1,45 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define reflector(a, b) { uint32_t tmp0=a; a=tmp0+b; b=tmp0-b; }
-#define rotator(a, b, c0, c1, c2) { uint32_t tmp0 = c1*b + c0*(a+b); b = c2*a + c0*(a+b); a=tmp0; a=round_16(a); b=round_16(b); }
+#define reflector(a, b) { register int32_t tmp=a; a=tmp+b; b=tmp-b; }
+
+#define rotator(a, b, c0, c1, c2) { \
+			uint32_t tmp0, tmp1; \
+			tmp0 = a+b; \
+			tmp0 *= c0; \
+			tmp1 = c1*b; \
+			tmp1 += tmp0; \
+			b = c2*a; \
+			b += tmp0; \
+			a=tmp1; \
+			} \
+			a=round_16(a); \
+			b=round_16(b);
+
 #define scale(a) a*=92682; a = round_16(a);
 #define round_16(a) ((a & 0x8000) ? ((a>>16) + 1) : (a>>16))
-#define round_5(a) ((a & 0b100) ? ((a >> 3) + 1) : (a >> 3))
-#define reflector_1(a,b) { uint32_t tmp = a; \
-						a = (tmp&0xffff0000) | (((int32_t)((int16_t)(tmp&0x0000ffff)) + (int32_t)((int16_t)(b>>16)))&0xffff); \
-						b = (b&0x0000ffff) | (((int32_t)((int16_t)(tmp&0x0000ffff)) - (int32_t)((int16_t)(b>>16))) << 16); }
-#define reflector_2(a,b) { uint32_t tmp = a; \
-						a = (tmp&0x0000ffff) | (((int32_t)((int16_t)(tmp>>16)) + (int32_t)((int16_t)(b&0x0000ffff))) << 16); \
-						b = (b&0xffff0000) | (((int32_t)((int16_t)(tmp>>16)) - (int32_t)((int16_t)(b&0x0000ffff)))&0xffff); }
+#define round_3(a) ((a & 0b100) ? ((a >> 3) + 1) : (a >> 3))
+#define reflector_1(a,b) { register int32_t tmp = a; \
+						a = (tmp&0xffff0000) | ((((int16_t)(tmp&0x0000ffff)) + ((int16_t)(b>>16)))&0xffff); \
+						b = (b&0x0000ffff) | ((((int16_t)(tmp&0x0000ffff)) - ((int16_t)(b>>16))) << 16); }
+#define reflector_2(a,b) { register int32_t tmp = a; \
+						a = (tmp&0x0000ffff) | ((((int16_t)(tmp>>16)) + ((int16_t)(b&0x0000ffff))) << 16); \
+						b = (b&0xffff0000) | ((((int16_t)(tmp>>16)) - ((int16_t)(b&0x0000ffff)))&0xffff); }
+
+
 
 void dct_round1(uint8_t x_[240][320], int16_t X_[240][320]) {
 	register int32_t* x = (int32_t*)(x_[0]);
 	register int32_t* X = (int32_t*)(X_[0]);
 	register int i;
+	register int32_t r0;
+	register int32_t r1;
+	register int32_t r2;
+	register int32_t r3;
+	register int32_t r4;
+	register int32_t r5;
 
 	for (i = 0; i < 9600; i++ ){
-		int32_t r0, r1, r2, r3, r4, r5;
 		r4 = *x++; //3210
 		r5 = *x++; //7654
 
@@ -34,7 +54,7 @@ void dct_round1(uint8_t x_[240][320], int16_t X_[240][320]) {
 		reflector_2(r1, r2);
 
 		r4 = ((int16_t)(r0 >> 16)); //x1
-		r0 = ((int16_t)(r0& 0xffff)); //x0
+		r0 = ((int16_t)(r0&0xffff)); //x0
 		r5 = ((int16_t)(r1 >> 16)); //x3
 		r1 = ((int16_t)(r1& 0xffff)); //x2
 
@@ -73,12 +93,17 @@ void dct_round1(uint8_t x_[240][320], int16_t X_[240][320]) {
 		*X++ = ((r2&0xffff) << 16) | ((r1&0xffff0000)>>16);
 	}
 	}
-void dct_round2(register int16_t X_[240][320]) {
-	register int i;
+void dct_round2(int16_t X_[240][320]) {
 	register int16_t* X = (X_[0]);
+	register int i;
+	register int32_t r0;
+	register int32_t r1;
+	register int32_t r2;
+	register int32_t r3;
+	register int32_t r4;
+	register int32_t r5;
 
 	for (i = 0; i < 9600; i++) {
-		int32_t r0, r1, r2, r3, r4, r5;
 		r0 = ((X[320] & 0xffff)<<16)|(X[0] & 0xffff); //x10
 		r1 = ((X[960] & 0xffff)<<16)|(X[640] & 0xffff); //x32
 		r2 = ((X[1600] & 0xffff)<<16)|(X[1280] & 0xffff); //x54
@@ -125,14 +150,14 @@ void dct_round2(register int16_t X_[240][320]) {
 		scale(r4);
 		scale(r3);
 
-		X[0] = round_5(((int16_t)(r0&0xffff)));
-		X[320] = round_5(r5);
-		X[640] = round_5(((int16_t)(r1&0xffff)));
-		X[960] = round_5(r4);
-		X[1280] = round_5(r0>>16);
-		X[1600] = round_5(r3);
-		X[1920] = round_5(r1>>16);
-		X[2240] = round_5(r2);
+		X[0] = round_3(((int16_t)(r0&0xffff)));
+		X[320] = round_3(r5);
+		X[640] = round_3(((int16_t)(r1&0xffff)));
+		X[960] = round_3(r4);
+		X[1280] = round_3(r0>>16);
+		X[1600] = round_3(r3);
+		X[1920] = round_3(r1>>16);
+		X[2240] = round_3(r2);
 
 		X += (i+1)%320 ? 1 : 2241;
 	}
