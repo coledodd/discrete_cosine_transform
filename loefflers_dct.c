@@ -19,185 +19,122 @@ void dct_round1(uint8_t x_[240][320], int16_t X_[240][320]) {
 	register int i;
 
 	for (i = 0; i < 9600; i++ ){
-			int32_t r0, r1, r2, r3, r4, r5;
-			r4 = *x++; //3210
-			r5 = *x++; //7654
+		int32_t r0, r1, r2, r3, r4, r5;
+		r4 = *x++; //3210
+		r5 = *x++; //7654
 
-			r0 = ((r4&(0x0000ff00))<<8) | ((r4&(0x000000ff)));
-			r1 = ((r4&(0xff000000))>>8) | ((r4&(0x00ff0000))>>16);
-			r2 = ((r5&(0x0000ff00))<<8) | ((r5&(0x000000ff)));
-			r3 = ((r5&(0xff000000))>>8) | ((r5&(0x00ff0000))>>16);
+		r0 = ((r4&(0x0000ff00))<<8) | ((r4&(0x000000ff)));
+		r1 = ((r4&(0xff000000))>>8) | ((r4&(0x00ff0000))>>16);
+		r2 = ((r5&(0x0000ff00))<<8) | ((r5&(0x000000ff)));
+		r3 = ((r5&(0xff000000))>>8) | ((r5&(0x00ff0000))>>16);
 
-			reflector_1(r0, r3);
-			reflector_2(r0, r3);
-			reflector_1(r1, r2);
-			reflector_2(r1, r2);
+		reflector_1(r0, r3);
+		reflector_2(r0, r3);
+		reflector_1(r1, r2);
+		reflector_2(r1, r2);
 
-			r4 = ((int16_t)(r0 >> 16)); //x1
-			r0 = ((int16_t)(r0& 0xffff)); //x0
-			r5 = ((int16_t)(r1 >> 16)); //x3
-			r1 = ((int16_t)(r1& 0xffff)); //x2
+		r4 = ((int16_t)(r0 >> 16)); //x1
+		r0 = ((int16_t)(r0& 0xffff)); //x0
+		r5 = ((int16_t)(r1 >> 16)); //x3
+		r1 = ((int16_t)(r1& 0xffff)); //x2
 
-			//stage 2
-			reflector(r0,r5);
-			reflector(r4,r1);
-			//stage 3
-			reflector(r0,r4);
-			rotator(r1,r5,35468,50159,-121095);   //sqrt2_c6
+		//stage 2
+		reflector(r0,r5);
+		reflector(r4,r1);
+		//stage 3
+		reflector(r0,r4);
+		rotator(r1,r5,35468,50159,-121095);   //sqrt2_c6
 
-			r0 &= 0xffff;
-			r1 &= 0xffff;
-			r0 |= ((r4&0xffff) << 16); //x10
-			r1 |= ((r5&0xffff) << 16); //x32
+		r0 &= 0xffff;
+		r1 &= 0xffff;
+		r0 |= ((r4&0xffff) << 16); //x10
+		r1 |= ((r5&0xffff) << 16); //x32
 
-			r4 = ((int16_t)(r2 >> 16)); //x5
-			r2 = ((int16_t)(r2& 0xffff)); //x4
-			r5 = ((int16_t)(r3 >> 16)); //x7
-			r3 = ((int16_t)(r3& 0xffff)); //x6
+		r4 = ((int16_t)(r2 >> 16)); //x5
+		r2 = ((int16_t)(r2& 0xffff)); //x4
+		r5 = ((int16_t)(r3 >> 16)); //x7
+		r3 = ((int16_t)(r3& 0xffff)); //x6
 
 
-			//stage 2
-			rotator(r2,r5,54491,-18081, -90901);  //c3
-			rotator(r4,r3,64277,-51491,-77062); //c1
-			//stage 3
-			reflector(r2,r3);
-			reflector(r5,r4);
-			//stage 4
-			reflector(r5,r2);
-			scale(r4);
-			scale(r3);
+		//stage 2
+		rotator(r2,r5,54491,-18081, -90901);  //c3
+		rotator(r4,r3,64277,-51491,-77062); //c1
+		//stage 3
+		reflector(r2,r3);
+		reflector(r5,r4);
+		//stage 4
+		reflector(r5,r2);
+		scale(r4);
+		scale(r3);
 
-			*X++ = ((r5&0xffff) << 16) | (r0&0xffff);
-			*X++ = ((r4&0xffff) << 16) | (r1&0xffff);
-			*X++ = ((r3&0xffff) << 16) | ((r0&0xffff0000)>>16);
-			*X++ = ((r2&0xffff) << 16) | ((r1&0xffff0000)>>16);
-		}
+		*X++ = ((r5&0xffff) << 16) | (r0&0xffff);
+		*X++ = ((r4&0xffff) << 16) | (r1&0xffff);
+		*X++ = ((r3&0xffff) << 16) | ((r0&0xffff0000)>>16);
+		*X++ = ((r2&0xffff) << 16) | ((r1&0xffff0000)>>16);
 	}
-// void dct_round2(register int16_t X[240][320]) {
-// 	register int i;
-// 	register int j;
-// 	for (i = 0; i < 240; i+=8) {
-// 		for (j = 0; j < 320; j++) {
-// 			int32_t r0, r1, r2, r3, r4, r5;
-// 			r0 = ((X[i+1][j] & 0xffff)<<16)|(X[i+0][j] & 0xffff); //x10
-// 			r1 = ((X[i+3][j] & 0xffff)<<16)|(X[i+2][j] & 0xffff); //x32
-// 			r2 = ((X[i+5][j] & 0xffff)<<16)|(X[i+4][j] & 0xffff); //x54
-// 			r3 = ((X[i+7][j] & 0xffff)<<16)|(X[i+6][j] & 0xffff); //x76
-
-// 			reflector_1(r0, r3);
-// 			reflector_2(r0, r3);
-// 			reflector_1(r1, r2);
-// 			reflector_2(r1, r2);
-
-// 			r4 = ((int16_t)(r0 >> 16)); //x1
-// 			r0 = ((int16_t)(r0& 0xffff)); //x0
-// 			r5 = ((int16_t)(r1 >> 16)); //x3
-// 			r1 = ((int16_t)(r1& 0xffff)); //x2
-			
-// 			//stage 2
-// 			reflector(r0,r5);
-// 			reflector(r4,r1);
-			
-// 			//stage 3
-// 			reflector(r0,r4);
-// 			rotator(r1,r5,35468,50159,-121095);   //sqrt2_c6
-
-// 			r0 &= 0xffff;
-// 			r1 &= 0xffff;
-// 			r0 |= ((r4&0xffff) << 16); //x10
-// 			r1 |= ((r5&0xffff) << 16); //x32
-
-// 			r4 = ((int16_t)(r2 >> 16)); //x5
-// 			r2 = ((int16_t)(r2& 0xffff)); //x4
-// 			r5 = ((int16_t)(r3 >> 16)); //x7
-// 			r3 = ((int16_t)(r3& 0xffff)); //x6
-
-// 			//stage 2
-// 			rotator(r2,r5,54491,-18081, -90901);  //c3
-// 			rotator(r4,r3,64277,-51491,-77062); //c1
-
-// 			//stage 3
-// 			reflector(r2,r3);
-// 			reflector(r5,r4);
-
-// 			//stage 4
-// 			reflector(r5,r2);
-// 			scale(r4);
-// 			scale(r3);
-
-// 			X[i+0][j] = round_5(((int16_t)(r0&0xffff)));
-// 			X[i+1][j] = round_5(r5);
-// 			X[i+2][j] = round_5(((int16_t)(r1&0xffff)));
-// 			X[i+3][j] = round_5(r4);
-// 			X[i+4][j] = round_5(r0>>16);
-// 			X[i+5][j] = round_5(r3);
-// 			X[i+6][j] = round_5(r1>>16);
-// 			X[i+7][j] = round_5(r2);	
-// 		}
-// 	}
-// }
+	}
 void dct_round2(register int16_t X_[240][320]) {
 	register int i;
 	register int16_t* X = (X_[0]);
 
 	for (i = 0; i < 9600; i++) {
-			int32_t r0, r1, r2, r3, r4, r5;
-			r0 = ((X[320] & 0xffff)<<16)|(X[0] & 0xffff); //x10
-			r1 = ((X[960] & 0xffff)<<16)|(X[640] & 0xffff); //x32
-			r2 = ((X[1600] & 0xffff)<<16)|(X[1280] & 0xffff); //x54
-			r3 = ((X[2240] & 0xffff)<<16)|(X[1920] & 0xffff); //x76
+		int32_t r0, r1, r2, r3, r4, r5;
+		r0 = ((X[320] & 0xffff)<<16)|(X[0] & 0xffff); //x10
+		r1 = ((X[960] & 0xffff)<<16)|(X[640] & 0xffff); //x32
+		r2 = ((X[1600] & 0xffff)<<16)|(X[1280] & 0xffff); //x54
+		r3 = ((X[2240] & 0xffff)<<16)|(X[1920] & 0xffff); //x76
 
-			reflector_1(r0, r3);
-			reflector_2(r0, r3);
-			reflector_1(r1, r2);
-			reflector_2(r1, r2);
+		reflector_1(r0, r3);
+		reflector_2(r0, r3);
+		reflector_1(r1, r2);
+		reflector_2(r1, r2);
 
-			r4 = ((int16_t)(r0 >> 16)); //x1
-			r0 = ((int16_t)(r0& 0xffff)); //x0
-			r5 = ((int16_t)(r1 >> 16)); //x3
-			r1 = ((int16_t)(r1& 0xffff)); //x2
-			
-			//stage 2
-			reflector(r0,r5);
-			reflector(r4,r1);
-			
-			//stage 3
-			reflector(r0,r4);
-			rotator(r1,r5,35468,50159,-121095);   //sqrt2_c6
+		r4 = ((int16_t)(r0 >> 16)); //x1
+		r0 = ((int16_t)(r0& 0xffff)); //x0
+		r5 = ((int16_t)(r1 >> 16)); //x3
+		r1 = ((int16_t)(r1& 0xffff)); //x2
 
-			r0 &= 0xffff;
-			r1 &= 0xffff;
-			r0 |= ((r4&0xffff) << 16); //x10
-			r1 |= ((r5&0xffff) << 16); //x32
+		//stage 2
+		reflector(r0,r5);
+		reflector(r4,r1);
 
-			r4 = ((int16_t)(r2 >> 16)); //x5
-			r2 = ((int16_t)(r2& 0xffff)); //x4
-			r5 = ((int16_t)(r3 >> 16)); //x7
-			r3 = ((int16_t)(r3& 0xffff)); //x6
+		//stage 3
+		reflector(r0,r4);
+		rotator(r1,r5,35468,50159,-121095);   //sqrt2_c6
 
-			//stage 2
-			rotator(r2,r5,54491,-18081, -90901);  //c3
-			rotator(r4,r3,64277,-51491,-77062); //c1
+		r0 &= 0xffff;
+		r1 &= 0xffff;
+		r0 |= ((r4&0xffff) << 16); //x10
+		r1 |= ((r5&0xffff) << 16); //x32
 
-			//stage 3
-			reflector(r2,r3);
-			reflector(r5,r4);
+		r4 = ((int16_t)(r2 >> 16)); //x5
+		r2 = ((int16_t)(r2& 0xffff)); //x4
+		r5 = ((int16_t)(r3 >> 16)); //x7
+		r3 = ((int16_t)(r3& 0xffff)); //x6
 
-			//stage 4
-			reflector(r5,r2);
-			scale(r4);
-			scale(r3);
+		//stage 2
+		rotator(r2,r5,54491,-18081, -90901);  //c3
+		rotator(r4,r3,64277,-51491,-77062); //c1
 
-			X[0] = round_5(((int16_t)(r0&0xffff)));
-			X[320] = round_5(r5);
-			X[640] = round_5(((int16_t)(r1&0xffff)));
-			X[960] = round_5(r4);
-			X[1280] = round_5(r0>>16);
-			X[1600] = round_5(r3);
-			X[1920] = round_5(r1>>16);
-			X[2240] = round_5(r2);
+		//stage 3
+		reflector(r2,r3);
+		reflector(r5,r4);
 
-			X += (i+1)%320 ? 1 : 2241;
+		//stage 4
+		reflector(r5,r2);
+		scale(r4);
+		scale(r3);
+
+		X[0] = round_5(((int16_t)(r0&0xffff)));
+		X[320] = round_5(r5);
+		X[640] = round_5(((int16_t)(r1&0xffff)));
+		X[960] = round_5(r4);
+		X[1280] = round_5(r0>>16);
+		X[1600] = round_5(r3);
+		X[1920] = round_5(r1>>16);
+		X[2240] = round_5(r2);
+
+		X += (i+1)%320 ? 1 : 2241;
 	}
 }
 
