@@ -1,6 +1,6 @@
-#include "loefflers_dct.h"
+#include "dct.h"
 #include "dct_confirmation.c"
-#include "test_images.c"
+
 
 #include <stdio.h>
 #include <stdint.h>
