@@ -1,15 +1,16 @@
 #include <math.h>
 #include <stdio.h>
+#include <stdint.h>
 //=================PROTOTYPES=============================
-void dct(int[8][8]);
+void dct(uint8_t[240][320],int16_t[240][320]);
 void Q(int[8][8], int);
 void dct_f(float[8][8]);
-int X(int,int);
+int16_t X(int,int);
 float X_f(int,int);
 float C(int);
 
 //=================VARIABLES==============================
-int (*input)[8];
+uint8_t input[8][8];
 float (*input_f)[8];
 
 //=================HELPER FUNCTIONS=======================
@@ -24,7 +25,7 @@ float C(int u){
   return (u == 0)? 1.0/sqrt(2.0):1;
 }
 
-int X(int u, int v){
+int16_t X(int u, int v){
   float sum = 0;
   int i = 0;
   int j = 0;
@@ -33,23 +34,40 @@ int X(int u, int v){
       sum += input[i][j] * cos((2*i+1)*M_PI*u/16) * cos((2*j+1)*M_PI*v/16);
     }
   }  
-  return (sum <= 0)?  (int)(round(sum * (C(u)/2) * (C(v)/2))-0.5):(int)(round(sum * (C(u)/2) * (C(v)/2))+0.5);
+  return (sum <= 0)?  (int16_t)(round(sum * (C(u)/2) * (C(v)/2))-0.5):(int16_t)(round(sum * (C(u)/2) * (C(v)/2))+0.5);
 }
 
-void dct(int a[8][8]){
-  input = a;
-  int result[8][8];
+void dct(uint8_t a[240][320], int16_t X_[240][320]){
+  
+  int16_t result[240][320];
   int i;
   int j;
-  for(i = 0; i < 8; i++){
-    for(j = 0; j < 8; j++){
-       result[i][j] = X(i,j);
-    }
-  }
+  int k;
+  int l;
 
-  for(i = 0; i < 8; i++){
-    for(j = 0; j < 8; j++){
-      a[i][j] = result[i][j];
+
+  //for each block
+  for(k = 0; k < 30; k++){
+    for(l = 0; l < 40; l++){
+      //getting input 8x8 for global storage
+      for(i = 0; i < 8; i++){
+        for(j = 0; j < 8; j++){
+          input[i][j] = a[k*8+i][l*8+j];
+        }
+      }
+      //for each pixel in block
+      for(i = 0; i < 8; i++){
+        for(j = 0; j < 8; j++){
+          //printf("here?");
+          result[k*8+i][l*8+j] = X(i,j);
+        }
+      }
+      //printf("here?");
+      for(i = 0; i < 8; i++){
+        for(j = 0; j < 8; j++){
+          X_[k*8+i][l*8+j] = result[k*8+i][l*8+j];
+        }
+      }
     }
   }
 }
